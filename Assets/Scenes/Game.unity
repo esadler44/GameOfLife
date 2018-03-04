@@ -777,6 +777,7 @@ GameObject:
   m_Component:
   - component: {fileID: 558951286}
   - component: {fileID: 558951287}
+  - component: {fileID: 558951288}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -833,6 +834,18 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &558951288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 558951285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bf1dac46c25a934a97f1d24cafa115c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 145345540}
 --- !u!1 &563834642
 GameObject:
   m_ObjectHideFlags: 0
@@ -2810,6 +2823,9 @@ MonoBehaviour:
   gameBoard: {fileID: 1176414704}
   gameCamera: {fileID: 558951287}
   cellPrefab: {fileID: 1680621712592260, guid: 80cbb82e4c18c914b83a5bb82e79b4fd, type: 2}
+  selectionIndicator: {fileID: 1307514403449300, guid: a0aa17132e1501f4eb2dc7c093263cbe,
+    type: 2}
+  cameraDistancePlacement: 10
 --- !u!1 &1805036774
 GameObject:
   m_ObjectHideFlags: 0
@@ -3017,6 +3033,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bf1dac46c25a934a97f1d24cafa115c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 0}
 --- !u!1 &1912652041
 GameObject:
   m_ObjectHideFlags: 0

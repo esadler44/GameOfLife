@@ -5,7 +5,9 @@ using System.Text;
 using UnityEngine;
 
 class GameOfLife3D : GameOfLife {
-    
+
+    public GameObject selectionIndicator;
+    public float cameraDistancePlacement = 10.0f;
     private Vector3 CELL_PIVOT_OFFSET = new Vector3(0.5f, 0.5f, 0.5f);
     private GameObject[,,] grid;
     private int width = 24;
@@ -14,15 +16,8 @@ class GameOfLife3D : GameOfLife {
 
     protected override void Awake() {
         grid = new GameObject[width, height, depth];
-        CreateCell(new Vector3Int(11, 11, 11));
-        CreateCell(new Vector3Int(12, 11, 11));
-        CreateCell(new Vector3Int(13, 11, 11));
-        CreateCell(new Vector3Int(11, 12, 11));
-        CreateCell(new Vector3Int(12, 12, 11));
-        CreateCell(new Vector3Int(13, 12, 11));
-        CreateCell(new Vector3Int(11, 13, 11));
-        CreateCell(new Vector3Int(12, 13, 11));
-        CreateCell(new Vector3Int(13, 13, 11));
+        selectionIndicator = Instantiate(selectionIndicator);
+        selectionIndicator.transform.SetParent(gameBoard);
     }
 
     private void Update() {
@@ -34,9 +29,17 @@ class GameOfLife3D : GameOfLife {
                 Tick();
             }
         } else {
+            Vector3 pos = gameCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, cameraDistancePlacement));
+            Vector3Int boardPos = new Vector3Int(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), Mathf.RoundToInt(pos.z));
+            selectionIndicator.transform.position = boardPos;
+            if (boardPos.x >= 0 && boardPos.x <= width && boardPos.y >= 0 && boardPos.y <= height && boardPos.z >= 0 && boardPos.z <= depth) {
+                selectionIndicator.SetActive(true);
+            } else {
+                selectionIndicator.SetActive(false);
+            }
             bool mouseClicked = Input.GetMouseButtonDown(0);
             if (mouseClicked) {
-               
+                ChangeCell(boardPos);
             }
         }
     }
@@ -51,11 +54,11 @@ class GameOfLife3D : GameOfLife {
                     bool cellIsAlive = grid[i, j, k] != null;
                     int numNeighbours = GetNumNeighbours(i, j, k);
                     if (cellIsAlive) {
-                        if (numNeighbours < 4 || numNeighbours > 10) {
+                        if (numNeighbours < 7 || numNeighbours > 12) {
                             toBeKilled.Add(new Vector3Int(i, j, k));
                         }
                     } else {
-                        if (numNeighbours >= 7 && numNeighbours <= 10) {
+                        if (numNeighbours >= 10 && numNeighbours <= 12) {
                             toBringToLife.Add(new Vector3Int(i, j, k));
                         }
                     }
@@ -122,7 +125,7 @@ class GameOfLife3D : GameOfLife {
     private void CreateCell(Vector3Int cellPos) {
         GameObject newCell = Instantiate(cellPrefab);
         newCell.transform.SetParent(gameBoard);
-        newCell.transform.position = cellPos + CELL_PIVOT_OFFSET;
+        newCell.transform.position = cellPos;
         grid[cellPos.x, cellPos.y, cellPos.z] = newCell;
     }
 
