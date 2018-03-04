@@ -34,10 +34,13 @@ public class GameManager : MonoBehaviour {
     private bool modeIs2d;
 
     private void Awake() {
+        modeIs2d = true;
         game = game2D;
+        game2D.gameObject.SetActive(true);
+        game3D.gameObject.SetActive(false);
         game.SetTickInterval(tickInterval.value);
-        GameOfLife.generationChanged += SetGenerationText;
-        GameOfLife.pauseStateChanged += SetPauseButton;
+        GameOfLife.GenerationChanged += SetGenerationText;
+        GameOfLife.PauseStateChanged += SetPauseButton;
     }
 
     public void SetTickInterval(float interval) {
@@ -52,8 +55,8 @@ public class GameManager : MonoBehaviour {
         playButton.GetComponentInChildren<Text>().text = paused ? "Play" : "Pause";
     }
 
-    public void Pause() {
-        game.Pause();
+    public void PlayPause() {
+        game.TogglePause();
     }
 
     public void Step() {
@@ -66,6 +69,17 @@ public class GameManager : MonoBehaviour {
 
     public void ChangeGameMode() {
         modeIs2d = !modeIs2d;
+        game.Pause();
+        SetPauseButton(true);
+        game.gameObject.SetActive(false);
+        if (modeIs2d) {
+            game = game2D;
+        } else {
+            game = game3D;
+        }
+        game.gameObject.SetActive(true);
+        SetGenerationText(game.GetGeneration());
+        game.SetTickInterval(tickInterval.value);
     }
 
     public void Quit() {

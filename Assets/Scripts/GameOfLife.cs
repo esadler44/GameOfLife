@@ -4,8 +4,8 @@ using UnityEngine;
 
 class GameOfLife : MonoBehaviour {
 
-    public static event Action<int> generationChanged;
-    public static event Action<bool> pauseStateChanged;
+    public static event Action<int> GenerationChanged;
+    public static event Action<bool> PauseStateChanged;
 
     protected bool gamePaused;
     protected float elapsedTime;
@@ -20,28 +20,33 @@ class GameOfLife : MonoBehaviour {
     private GameObject[,] grid;
     private int width = 100;
     private int height = 100;
-    private int generation;
-    private float tickInterval = 1.0f;
+    protected int generation;
+    protected float tickInterval = 1.0f;
 
-    private void Awake() {
+    protected virtual void Awake() {
         grid = new GameObject[width, height];
     }
 
-    private void Start() {
+    protected void Start() {
+        Debug.Log("Test");
         OnPauseStateChanged(gamePaused = true);
         OnGenerationChanged(generation = 0);
         elapsedTime = 0f;
     }
 
     protected void OnPauseStateChanged(bool value) {
-        if (pauseStateChanged != null) {
-            pauseStateChanged(value);
+        if (PauseStateChanged != null) {
+            PauseStateChanged(value);
         }
     }
 
+    public int GetGeneration() {
+        return generation;
+    }
+
     protected void OnGenerationChanged(int value) {
-        if (generationChanged != null) {
-            generationChanged(value);
+        if (GenerationChanged != null) {
+            GenerationChanged(value);
         }
     }
 
@@ -63,9 +68,26 @@ class GameOfLife : MonoBehaviour {
         }
     }
 
+    public void TogglePause() {
+        if (gamePaused) {
+            Play();
+        } else {
+            Pause();
+        }
+    }
+
     public void Pause() {
-        gamePaused = !gamePaused;
-        OnPauseStateChanged(gamePaused);
+        if (!gamePaused) {
+            gamePaused = true;
+            OnPauseStateChanged(gamePaused);
+        }
+    }
+
+    public void Play() {
+        if (gamePaused) {
+            gamePaused = false;
+            OnPauseStateChanged(gamePaused);
+        }
     }
 
     public void SetTickInterval(float tickInterval) {
