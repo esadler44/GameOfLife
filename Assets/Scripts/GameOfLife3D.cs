@@ -1,21 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 
-class GameOfLife : MonoBehaviour {
+class GameOfLife3D : GameOfLife {
 
-    public static event Action<int> generationChanged;
-    public static event Action<bool> pauseStateChanged;
-
-    protected bool gamePaused;
-    protected float elapsedTime;
     [SerializeField]
-    protected Transform gameBoard;
-    [SerializeField]
-    protected Camera gameCamera;
-    [SerializeField]
-    protected GameObject cellPrefab;
-
+    private GameObject cellPrefab;
     private Vector2 CELL_PIVOT_OFFSET = new Vector2(0.5f, 0.5f);
     private GameObject[,] grid;
     private int width = 100;
@@ -28,21 +20,9 @@ class GameOfLife : MonoBehaviour {
     }
 
     private void Start() {
-        OnPauseStateChanged(gamePaused = true);
-        OnGenerationChanged(generation = 0);
+        pauseStateChanged(gamePaused = true);
+        generationChanged(generation = 0);
         elapsedTime = 0f;
-    }
-
-    protected void OnPauseStateChanged(bool value) {
-        if (pauseStateChanged != null) {
-            pauseStateChanged(value);
-        }
-    }
-
-    protected void OnGenerationChanged(int value) {
-        if (generationChanged != null) {
-            generationChanged(value);
-        }
     }
 
     private void Update() {
@@ -65,15 +45,15 @@ class GameOfLife : MonoBehaviour {
 
     public void Pause() {
         gamePaused = !gamePaused;
-        OnPauseStateChanged(gamePaused);
+        pauseStateChanged(gamePaused);
     }
 
     public void SetTickInterval(float tickInterval) {
-         this.tickInterval = tickInterval;
+        this.tickInterval = tickInterval;
     }
 
     public virtual void Tick() {
-        OnGenerationChanged(++generation);
+        generationChanged(++generation);
         List<Vector2Int> toBringToLife = new List<Vector2Int>();
         List<Vector2Int> toBeKilled = new List<Vector2Int>();
         for (int i = 0; i < width; i++) {
@@ -100,14 +80,14 @@ class GameOfLife : MonoBehaviour {
     }
 
     public virtual void Restart() {
-        OnPauseStateChanged(gamePaused = true);
-        OnGenerationChanged(generation = 0);
+        pauseStateChanged(gamePaused = true);
         foreach (GameObject cell in grid) {
             if (cell != null) {
                 Destroy(cell);
             }
         }
         Array.Clear(grid, 0, grid.Length);
+        generationChanged(generation = 0);
     }
 
     private int GetNumNeighbours(int x, int y) {
@@ -138,7 +118,8 @@ class GameOfLife : MonoBehaviour {
             } else {
                 DestroyCell(cellPos);
             }
-        } catch {
+        }
+        catch {
             return;
         }
     }
@@ -157,4 +138,5 @@ class GameOfLife : MonoBehaviour {
         }
         grid[cellPos.x, cellPos.y] = null;
     }
+
 }

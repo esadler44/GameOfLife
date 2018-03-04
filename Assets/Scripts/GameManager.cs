@@ -4,6 +4,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
+    [SerializeField]
+    private Text generationText;
+
     // Play button
     [SerializeField]
     private Button playButton;
@@ -11,6 +14,9 @@ public class GameManager : MonoBehaviour {
     // Step button
     [SerializeField]
     private Button stepButton;
+
+    [SerializeField]
+    private Button restartButton;
 
     // 2D Game
     [SerializeField]
@@ -30,10 +36,20 @@ public class GameManager : MonoBehaviour {
     private void Awake() {
         game = game2D;
         game.SetTickInterval(tickInterval.value);
+        GameOfLife.generationChanged += SetGenerationText;
+        GameOfLife.pauseStateChanged += SetPauseButton;
     }
 
     public void SetTickInterval(float interval) {
         game.SetTickInterval(interval);
+    }
+
+    private void SetGenerationText(int generation) {
+        generationText.text = "Generation: " + generation; 
+    }
+
+    private void SetPauseButton(bool paused) {
+        playButton.GetComponentInChildren<Text>().text = paused ? "Play" : "Pause";
     }
 
     public void Pause() {

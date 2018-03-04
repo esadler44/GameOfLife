@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4453526737467014}
   - component: {fileID: 33872546730332314}
   - component: {fileID: 23974778996251482}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Cell2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
